@@ -3,8 +3,8 @@ package s3
 import "testing"
 
 func TestPresignPutObject(t *testing.T) {
-	s3Client := NewClient("bucket")
-	presign, err := s3Client.PresignPutObject("path/to/filename.txt")
+	client := NewClient("bucket")
+	presign, err := client.PresignPutObject("path/to/filename.txt")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -12,8 +12,8 @@ func TestPresignPutObject(t *testing.T) {
 }
 
 func TestPutObject(t *testing.T) {
-	s3Client := NewClient("bucket")
-	obj, err := s3Client.PutObject("path/to/filename.txt", []byte("hello world"))
+	client := NewClient("bucket")
+	obj, err := client.PutObject("path/to/filename.txt", []byte("hello world"))
 	if err != nil {
 		t.Fatal(err)
 	}
