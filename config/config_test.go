@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-const config = `
+const content = `
 name: hello
 age: 10
 `
@@ -15,7 +15,7 @@ func createTempFile() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	_, err = file.WriteString(config)
+	_, err = file.WriteString(content)
 	if err != nil {
 		return "", err
 	}
@@ -39,10 +39,7 @@ func TestLoad(t *testing.T) {
 	}{}
 
 	cfg := New()
-	if err := cfg.Load(filename); err != nil {
-		t.Error(err)
-	}
-	if err := cfg.Unmarshal(&data); err != nil {
+	if err := cfg.LoadFromFile(filename, &data); err != nil {
 		t.Error(err)
 	}
 	t.Log(data)

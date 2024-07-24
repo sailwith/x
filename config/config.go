@@ -1,6 +1,10 @@
 package config
 
-import "github.com/spf13/viper"
+import (
+	"fmt"
+
+	"github.com/spf13/viper"
+)
 
 type Config struct{}
 
@@ -8,11 +12,11 @@ func New() *Config {
 	return &Config{}
 }
 
-func (c *Config) Load(file string) error {
+func (c *Config) LoadFromFile(file string, data any) error {
 	viper.SetConfigFile(file)
-	return viper.ReadInConfig()
-}
+	if err := viper.ReadInConfig(); err != nil {
+		return fmt.Errorf("failed to read config file: %w", err)
+	}
 
-func (c *Config) Unmarshal(data any) error {
 	return viper.Unmarshal(data)
 }
