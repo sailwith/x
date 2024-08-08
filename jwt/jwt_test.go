@@ -3,6 +3,8 @@ package jwt
 import (
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestNew(t *testing.T) {
@@ -18,14 +20,10 @@ func TestNew(t *testing.T) {
 	secret := []byte("123456")
 	j := New(secret)
 	token, err := j.NewWithClaims(claims)
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.NoError(t, err)
 	t.Log(token)
 
 	c, err := j.Parse(token)
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.NoError(t, err)
 	t.Log(c)
 }

@@ -1,12 +1,14 @@
 package pay
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+)
 
 func TestGetRecentOrder(t *testing.T) {
 	pay := New("https://sandbox.itunes.apple.com/verifyReceipt", "")
 	iap, err := pay.GetRecentOrder("")
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.NoError(t, err)
 	t.Log(iap)
 }

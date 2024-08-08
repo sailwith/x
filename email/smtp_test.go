@@ -1,6 +1,10 @@
 package email
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+)
 
 func TestSend(t *testing.T) {
 	smtpDialer := NewSMTPDialer("smtp.qiye.aliyun.com", 465, "name@example.com", "password")
@@ -15,7 +19,5 @@ func TestSend(t *testing.T) {
 		Body:     "This is a test email.",
 		Attach:   "/tmp/1.txt",
 	})
-	if err != nil {
-		t.Error("send failed", err)
-	}
+	assert.NoError(t, err)
 }

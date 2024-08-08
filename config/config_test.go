@@ -3,6 +3,8 @@ package config
 import (
 	"os"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 const content = `
@@ -27,9 +29,7 @@ func createTempFile() (string, error) {
 
 func TestLoad(t *testing.T) {
 	filename, err := createTempFile()
-	if err != nil {
-		t.Error(err)
-	}
+	assert.NoError(t, err)
 	t.Log(filename)
 	defer os.Remove(filename)
 
@@ -39,8 +39,7 @@ func TestLoad(t *testing.T) {
 	}{}
 
 	cfg := New()
-	if err := cfg.LoadFromFile(filename, &data); err != nil {
-		t.Error(err)
-	}
+	err = cfg.LoadFromFile(filename, &data)
+	assert.NoError(t, err)
 	t.Log(data)
 }

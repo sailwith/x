@@ -1,45 +1,37 @@
 package cast
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+)
 
 func TestToBool(t *testing.T) {
 	r := ToBool(1)
-	if !r {
-		t.Error("cast to bool failed")
-	}
+	assert.True(t, r)
 }
 
 func TestToString(t *testing.T) {
 	r := ToString(123456)
-	if r != "123456" {
-		t.Error("cast to string failed")
-	}
+	assert.Equal(t, "123456", r)
 }
 
 func TestToInt(t *testing.T) {
 	r := ToInt("-123456")
-	if r != -123456 {
-		t.Error("cast to int failed")
-	}
+	assert.Equal(t, -123456, r)
 }
 
 func TestToUInt(t *testing.T) {
 	r := ToUInt("123456")
-	if r != 123456 {
-		t.Error("cast to uint failed")
-	}
+	assert.Equal(t, uint(123456), r)
 }
 
 func TestToInt64(t *testing.T) {
 	r := ToInt64("-1444784865584")
-	if r != -1444784865584 {
-		t.Error("cast to int64 failed")
-	}
+	assert.Equal(t, int64(-1444784865584), r)
 }
 
 func TestToUInt64(t *testing.T) {
 	r := ToUInt64("1444784865584")
-	if r != 1444784865584 {
-		t.Error("cast to uint64 failed")
-	}
+	assert.Equal(t, uint64(1444784865584), r)
 }

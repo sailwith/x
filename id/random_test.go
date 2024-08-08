@@ -1,13 +1,14 @@
 package id
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+)
 
 func TestNewRandomNumber(t *testing.T) {
 	num, err := NewRandomNumber(6)
-	if err != nil {
-		t.Error("random number error:", err)
-	}
-	if num < 100000 || num > 999999 {
-		t.Error("random number not in range:", num)
-	}
+	assert.NoError(t, err)
+	assert.GreaterOrEqual(t, num, 100000)
+	assert.LessOrEqual(t, num, 999999)
 }
