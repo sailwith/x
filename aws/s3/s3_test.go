@@ -16,6 +16,7 @@ func TestPresignPutObject(t *testing.T) {
 func TestPutObject(t *testing.T) {
 	client := NewClient("bucket")
 	obj, err := client.PutObject("path/to/filename.txt", []byte("hello world"))
-	assert.NoError(t, err)
-	t.Log(obj.Key, obj.ETag)
+	if assert.NoError(t, err) {
+		t.Log(obj.Key, obj.ETag)
+	}
 }
