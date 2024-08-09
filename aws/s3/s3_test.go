@@ -7,14 +7,18 @@ import (
 )
 
 func TestPresignPutObject(t *testing.T) {
-	client := NewClient("bucket")
+	client := New(Config{
+		Bucket: "bucket",
+	})
 	presign, err := client.PresignPutObject("path/to/filename.txt")
 	assert.NoError(t, err)
 	t.Log(presign.URL)
 }
 
 func TestPutObject(t *testing.T) {
-	client := NewClient("bucket")
+	client := New(Config{
+		Bucket: "bucket",
+	})
 	obj, err := client.PutObject("path/to/filename.txt", []byte("hello world"))
 	if assert.NoError(t, err) {
 		t.Log(obj.Key, obj.ETag)

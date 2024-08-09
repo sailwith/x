@@ -11,13 +11,17 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 )
 
+type Config struct {
+	Bucket string
+}
+
 type Client struct {
 	bucket        string
 	instance      *s3.Client
 	presignClient *s3.PresignClient
 }
 
-func NewClient(bucket string) *Client {
+func New(c Config) *Client {
 	// Read the aws configuration file, the default path is ~/.aws.
 	cfg, err := awscfg.LoadDefaultConfig(context.Background())
 	if err != nil {
@@ -27,7 +31,7 @@ func NewClient(bucket string) *Client {
 	client := s3.NewFromConfig(cfg)
 
 	return &Client{
-		bucket:        bucket,
+		bucket:        c.Bucket,
 		instance:      client,
 		presignClient: s3.NewPresignClient(client),
 	}
