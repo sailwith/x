@@ -7,15 +7,20 @@ import (
 	"net/http"
 )
 
+type Config struct {
+	Endpoint string
+	BundleID string
+}
+
 type Pay struct {
 	endpoint string
 	bundleID string
 }
 
-func New(endpoint string, bundleID string) *Pay {
+func New(c Config) *Pay {
 	return &Pay{
-		endpoint: endpoint,
-		bundleID: bundleID,
+		endpoint: c.Endpoint,
+		bundleID: c.BundleID,
 	}
 }
 

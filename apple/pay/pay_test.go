@@ -7,7 +7,10 @@ import (
 )
 
 func TestGetRecentOrder(t *testing.T) {
-	pay := New("https://sandbox.itunes.apple.com/verifyReceipt", "")
+	pay := New(Config{
+		Endpoint: "https://sandbox.itunes.apple.com/verifyReceipt",
+		BundleID: "",
+	})
 	iap, err := pay.GetRecentOrder("")
 	assert.NoError(t, err)
 	t.Log(iap)
