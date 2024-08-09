@@ -7,8 +7,13 @@ import (
 )
 
 func TestSend(t *testing.T) {
-	smtpDialer := NewSMTPDialer("smtp.qiye.aliyun.com", 465, "name@example.com", "password")
-	err := smtpDialer.Send(SendOption{
+	smtpDialer := NewSMTPDialer(Config{
+		Host:     "smtp.qiye.aliyun.com",
+		Port:     465,
+		Username: "name@example.com",
+		Password: "password",
+	})
+	err := smtpDialer.Send(SendConfig{
 		FromAddr: "name@example.com",
 		FromName: "From",
 		ToAddr:   "to@example.com",

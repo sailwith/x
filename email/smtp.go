@@ -2,11 +2,18 @@ package email
 
 import "gopkg.in/gomail.v2"
 
+type Config struct {
+	Host     string
+	Port     int
+	Username string
+	Password string
+}
+
 type SMTPDialer struct {
 	dialer *gomail.Dialer
 }
 
-type SendOption struct {
+type SendConfig struct {
 	FromAddr string
 	FromName string
 	ToAddr   string
@@ -18,23 +25,23 @@ type SendOption struct {
 	Attach   string
 }
 
-func NewSMTPDialer(host string, port int, username string, password string) *SMTPDialer {
+func NewSMTPDialer(c Config) *SMTPDialer {
 	return &SMTPDialer{
-		dialer: gomail.NewDialer(host, port, username, password),
+		dialer: gomail.NewDialer(c.Host, c.Port, c.Username, c.Password),
 	}
 }
 
-func (s *SMTPDialer) Send(opt SendOption) error {
+func (s *SMTPDialer) Send(c SendConfig) error {
 	m := gomail.NewMessage()
-	m.SetAddressHeader("From", opt.FromAddr, opt.FromName)
-	m.SetAddressHeader("To", opt.ToAddr, opt.ToName)
-	if opt.CcAddr != "" {
-		m.SetAddressHeader("Cc", opt.CcAddr, opt.CcName)
+	m.SetAddressHeader("From", c.FromAddr, c.FromName)
+	m.SetAddressHeader("To", c.ToAddr, c.ToName)
+	if c.CcAddr != "" {
+		m.SetAddressHeader("Cc", c.CcAddr, c.CcName)
 	}
-	m.SetHeader("Subject", opt.Subject)
-	m.SetBody("text/html", opt.Body)
-	if opt.Attach != "" {
-		m.Attach(opt.Attach)
+	m.SetHeader("Subject", c.Subject)
+	m.SetBody("text/html", c.Body)
+	if c.Attach != "" {
+		m.Attach(c.Attach)
 	}
 
 	return s.dialer.DialAndSend(m)

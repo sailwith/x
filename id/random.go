@@ -10,7 +10,7 @@ func NewRandomNumber(length int) (int, error) {
 		return 0, fmt.Errorf("length must be greater than 0")
 	}
 
-	// Calculate the lower and upper bounds for the number of the specified length
+	// Calculate the lower and upper bounds for the number of the specified length.
 	lower := 1
 	upper := 1
 	for i := 0; i < length; i++ {
@@ -19,10 +19,10 @@ func NewRandomNumber(length int) (int, error) {
 			lower *= 10
 		}
 	}
-	// To ensure the number has exactly the specified length
+	// To ensure the number has exactly the specified length.
 	upper--
 
-	// Generate the random number
+	// Generate the random number.
 	number := lower + rand.Intn(upper-lower+1)
 
 	return number, nil
