@@ -17,8 +17,9 @@ func TestNew(t *testing.T) {
 			"user_name": "name",
 		},
 	}
-	secret := []byte("123456")
-	j := New(secret)
+	j := New(Config{
+		Secret: []byte("123456"),
+	})
 	token, err := j.NewWithClaims(claims)
 	assert.NoError(t, err)
 	t.Log(token)

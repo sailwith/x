@@ -6,14 +6,18 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
+type Config struct {
+	Secret []byte
+}
+
 type JWT struct {
 	secret []byte
 	alg    jwt.SigningMethod
 }
 
-func New(secret []byte) *JWT {
+func New(c Config) *JWT {
 	return &JWT{
-		secret: secret,
+		secret: c.Secret,
 		alg:    jwt.SigningMethodHS256,
 	}
 }
