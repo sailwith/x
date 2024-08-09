@@ -34,6 +34,13 @@ type PutInfo struct {
 	SignedURL string
 }
 
+type Config struct {
+	Endpoint        string
+	BucketName      string
+	AccessKeyID     string
+	AccessKeySecret string
+}
+
 type OSS struct {
 	endpoint        string
 	bucketName      string
@@ -43,24 +50,24 @@ type OSS struct {
 	bucket          *oss.Bucket
 }
 
-func New(endpoint string, key string, secret string, bucketName string) *OSS {
-	host := "https://" + bucketName + "." + endpoint
-	client, err := oss.New(endpoint, key, secret)
+func New(c Config) *OSS {
+	host := "https://" + c.BucketName + "." + c.Endpoint
+	client, err := oss.New(c.Endpoint, c.AccessKeyID, c.AccessKeySecret)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	bucket, err := client.Bucket(bucketName)
+	bucket, err := client.Bucket(c.BucketName)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	return &OSS{
-		endpoint:        endpoint,
-		bucketName:      bucketName,
+		endpoint:        c.Endpoint,
+		bucketName:      c.BucketName,
 		host:            host,
-		accessKeyID:     key,
-		accessKeySecret: secret,
+		accessKeyID:     c.AccessKeyID,
+		accessKeySecret: c.AccessKeySecret,
 		bucket:          bucket,
 	}
 }
