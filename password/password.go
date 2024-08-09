@@ -10,10 +10,7 @@ func Encrypt(password string) (string, error) {
 	return string(bytes), err
 }
 
-// Verify the password is correct.
-func IsValid(hash, password string) bool {
-	if err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password)); err != nil {
-		return false
-	}
-	return true
+// Check if the password is correct.
+func Check(hash, password string) error {
+	return bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 }

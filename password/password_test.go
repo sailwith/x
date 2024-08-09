@@ -14,9 +14,9 @@ func TestEncrypt(t *testing.T) {
 	t.Log(hash)
 }
 
-func TestIsValid(t *testing.T) {
+func TestCheck(t *testing.T) {
 	password := "123456"
 	hash, err := Encrypt(password)
 	assert.NoError(t, err)
-	assert.True(t, IsValid(hash, password))
+	assert.NoError(t, Check(hash, password))
 }
