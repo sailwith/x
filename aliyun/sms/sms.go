@@ -18,17 +18,26 @@ func (t TemplateParam) String() string {
 	return string(b)
 }
 
+type Config struct {
+	AccessKeyID     string
+	AccessKeySecret string
+	Endpoint        string
+
+	SigName      string
+	TemplateCode string
+}
+
 type SMS struct {
 	client       *dysmsapi.Client
 	sigName      string
 	templateCode string
 }
 
-func New(sigName string, templateCode string, accessKeyID string, accessKeySecret string, endpoint string) *SMS {
+func New(c Config) *SMS {
 	cfg := &openapi.Config{
-		AccessKeyId:     &accessKeyID,
-		AccessKeySecret: &accessKeySecret,
-		Endpoint:        &endpoint,
+		AccessKeyId:     &c.AccessKeyID,
+		AccessKeySecret: &c.AccessKeySecret,
+		Endpoint:        &c.Endpoint,
 	}
 
 	cli, err := dysmsapi.NewClient(cfg)
@@ -38,8 +47,8 @@ func New(sigName string, templateCode string, accessKeyID string, accessKeySecre
 
 	return &SMS{
 		client:       cli,
-		sigName:      sigName,
-		templateCode: templateCode,
+		sigName:      c.SigName,
+		templateCode: c.TemplateCode,
 	}
 }
 
