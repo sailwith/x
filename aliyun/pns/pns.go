@@ -8,15 +8,21 @@ import (
 	dypnsapi "github.com/alibabacloud-go/dypnsapi-20170525/client"
 )
 
+type Config struct {
+	AccessKeyID     string
+	AccessKeySecret string
+	Endpoint        string
+}
+
 type PNS struct {
 	client *dypnsapi.Client
 }
 
-func New(accessKeyID string, accessKeySecret string, endpoint string) *PNS {
+func New(c Config) *PNS {
 	cfg := &openapi.Config{
-		AccessKeyId:     &accessKeyID,
-		AccessKeySecret: &accessKeySecret,
-		Endpoint:        &endpoint,
+		AccessKeyId:     &c.AccessKeyID,
+		AccessKeySecret: &c.AccessKeySecret,
+		Endpoint:        &c.Endpoint,
 	}
 
 	cli, err := dypnsapi.NewClient(cfg)
