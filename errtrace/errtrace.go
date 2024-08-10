@@ -1,11 +1,15 @@
 package errtrace
 
-import "github.com/ztrue/tracerr"
+import (
+	"fmt"
+
+	"braces.dev/errtrace"
+)
 
 func Wrap(err error) error {
-	return tracerr.Wrap(err)
+	return errtrace.Wrap(err)
 }
 
 func Print(err error) {
-	tracerr.Print(err)
+	fmt.Printf("%+v", err)
 }

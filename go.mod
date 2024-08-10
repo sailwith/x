@@ -3,6 +3,7 @@ module github.com/sailwith/x
 go 1.21.4
 
 require (
+	braces.dev/errtrace v0.3.0
 	github.com/alibabacloud-go/darabonba-openapi v0.2.1
 	github.com/alibabacloud-go/dypnsapi-20170525 v1.0.6
 	github.com/alibabacloud-go/dysmsapi-20170525/v2 v2.0.18
@@ -17,7 +18,6 @@ require (
 	github.com/spf13/cast v1.6.0
 	github.com/spf13/viper v1.19.0
 	github.com/stretchr/testify v1.9.0
-	github.com/ztrue/tracerr v0.4.0
 	go.uber.org/zap v1.27.0
 	golang.org/x/crypto v0.21.0
 	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df
