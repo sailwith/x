@@ -37,8 +37,8 @@ func New(c Config) *Client {
 	}
 }
 
-func (c *Client) PresignPutObject(key string) (*PresignRequest, error) {
-	req, err := c.presignClient.PresignPutObject(context.Background(), &s3.PutObjectInput{
+func (c *Client) PresignPutObject(ctx context.Context, key string) (*PresignRequest, error) {
+	req, err := c.presignClient.PresignPutObject(ctx, &s3.PutObjectInput{
 		Bucket: &c.bucket,
 		Key:    &key,
 	}, func(po *s3.PresignOptions) {
@@ -54,8 +54,8 @@ func (c *Client) PresignPutObject(key string) (*PresignRequest, error) {
 	}, nil
 }
 
-func (c *Client) PutObject(key string, content []byte) (*Object, error) {
-	output, err := c.instance.PutObject(context.Background(), &s3.PutObjectInput{
+func (c *Client) PutObject(ctx context.Context, key string, content []byte) (*Object, error) {
+	output, err := c.instance.PutObject(ctx, &s3.PutObjectInput{
 		Bucket: &c.bucket,
 		Key:    &key,
 		Body:   bytes.NewReader(content),
