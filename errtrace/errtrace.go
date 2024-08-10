@@ -1,4 +1,4 @@
-package errors
+package errtrace
 
 import "github.com/ztrue/tracerr"
 
