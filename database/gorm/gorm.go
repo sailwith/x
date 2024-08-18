@@ -7,11 +7,17 @@ import (
 )
 
 type Config struct {
-	DSN string
+	DSN    string
+	Logger Logger
 }
 
 func New(c Config) (*gorm.DB, error) {
+	l := logger.Default.LogMode(logger.Info)
+	if c.Logger != nil {
+		l = c.Logger
+	}
+
 	return gorm.Open(mysql.Open(c.DSN), &gorm.Config{
-		Logger: logger.Default.LogMode(logger.Info),
+		Logger: l,
 	})
 }
