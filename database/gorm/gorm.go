@@ -6,12 +6,14 @@ import (
 	"gorm.io/gorm/logger"
 )
 
+type DB = gorm.DB
+
 type Config struct {
 	DSN    string
 	Logger Logger
 }
 
-func New(c Config) (*gorm.DB, error) {
+func New(c Config) (*DB, error) {
 	l := logger.Default.LogMode(logger.Info)
 	if c.Logger != nil {
 		l = c.Logger
