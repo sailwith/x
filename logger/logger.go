@@ -35,7 +35,7 @@ func New(c Config) (*Logger, error) {
 		MaxSize:    c.MaxSize, // megabytes
 		MaxAge:     c.MaxAge,  //days
 		MaxBackups: c.MaxBackups,
-		Compress:   true, // disabled by default
+		Compress:   c.Compress, // disabled by default
 	}
 
 	// Output logs to both the terminal and the file.
