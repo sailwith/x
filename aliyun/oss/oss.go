@@ -7,20 +7,89 @@ import (
 	"encoding/json"
 	"hash"
 	"io"
-	"log"
 	"time"
 
 	"github.com/aliyun/aliyun-oss-go-sdk/oss"
 )
 
-var expireTime int64 = 3600
+const expiredInSec int64 = 300
 
-type PostPolicy struct {
-	Expiration string          `json:"expiration"`
-	Conditions [][]interface{} `json:"conditions"`
+type Config struct {
+	Endpoint        string
+	BucketName      string
+	AccessKeyID     string
+	AccessKeySecret string
 }
 
-type PolicyToken struct {
+type Client struct {
+	endpoint        string
+	bucketName      string
+	host            string
+	accessKeyID     string
+	accessKeySecret string
+	bucket          *oss.Bucket
+}
+
+func New(c Config) (*Client, error) {
+	client, err := oss.New(c.Endpoint, c.AccessKeyID, c.AccessKeySecret)
+	if err != nil {
+		return nil, err
+	}
+
+	bucket, err := client.Bucket(c.BucketName)
+	if err != nil {
+		return nil, err
+	}
+
+	host := "https://" + c.BucketName + "." + c.Endpoint
+	return &Client{
+		endpoint:        c.Endpoint,
+		bucketName:      c.BucketName,
+		host:            host,
+		accessKeyID:     c.AccessKeyID,
+		accessKeySecret: c.AccessKeySecret,
+		bucket:          bucket,
+	}, nil
+}
+
+type signURLResp struct {
+	SignedURL string
+}
+
+type SignURLConfig struct {
+	ContentType string
+	Callback    string
+	CallbackVar string
+}
+
+func (c *Client) SignURL(key string, cfg SignURLConfig) (*signURLResp, error) {
+	opts := []oss.Option{}
+	if cfg.ContentType != "" {
+		opts = append(opts, oss.ContentType(cfg.ContentType))
+	}
+	if cfg.Callback != "" {
+		opts = append(opts, oss.Callback(cfg.Callback))
+	}
+	if cfg.CallbackVar != "" {
+		opts = append(opts, oss.CallbackVar(cfg.CallbackVar))
+	}
+
+	signedURL, err := c.bucket.SignURL(key, oss.HTTPPut, expiredInSec, opts...)
+	if err != nil {
+		return nil, err
+	}
+
+	return &signURLResp{
+		SignedURL: signedURL,
+	}, nil
+}
+
+type postConfig struct {
+	Expiration string  `json:"expiration"`
+	Conditions [][]any `json:"conditions"`
+}
+
+type policyToken struct {
 	AccessKeyId string
 	Host        string
 	Expire      int64
@@ -30,95 +99,32 @@ type PolicyToken struct {
 	Callback    string
 }
 
-type PutInfo struct {
-	SignedURL string
-}
-
-type Config struct {
-	Endpoint        string
-	BucketName      string
-	AccessKeyID     string
-	AccessKeySecret string
-}
-
-type OSS struct {
-	endpoint        string
-	bucketName      string
-	host            string
-	accessKeyID     string
-	accessKeySecret string
-	bucket          *oss.Bucket
-}
-
-func New(c Config) *OSS {
-	host := "https://" + c.BucketName + "." + c.Endpoint
-	client, err := oss.New(c.Endpoint, c.AccessKeyID, c.AccessKeySecret)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	bucket, err := client.Bucket(c.BucketName)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return &OSS{
-		endpoint:        c.Endpoint,
-		bucketName:      c.BucketName,
-		host:            host,
-		accessKeyID:     c.AccessKeyID,
-		accessKeySecret: c.AccessKeySecret,
-		bucket:          bucket,
-	}
-}
-
-func (o *OSS) PutInfo(key, contentType, callback, callbackVar string) (*PutInfo, error) {
-	opts := []oss.Option{oss.ForbidOverWrite(true)}
-	if contentType != "" {
-		opts = append(opts, oss.ContentType(contentType))
-	}
-	if callback != "" {
-		opts = append(opts, oss.Callback(callback))
-	}
-	if callbackVar != "" {
-		opts = append(opts, oss.CallbackVar(callbackVar))
-	}
-	signedURL, err := o.bucket.SignURL(key, oss.HTTPPut, expireTime, opts...)
-	if err != nil {
-		return nil, err
-	}
-
-	var putInfo PutInfo
-	putInfo.SignedURL = signedURL
-	return &putInfo, nil
-}
-
-func (o *OSS) PostInfo(dir string) (*PolicyToken, error) {
+func (c *Client) PostInfo(dir string) (*policyToken, error) {
 	now := time.Now().Unix()
-	expireEnd := now + expireTime
+	expireEnd := now + expiredInSec
 	tokenExpire := gmtISO8601(expireEnd)
 
-	//create post policy json
-	var policy PostPolicy
-	policy.Expiration = tokenExpire
-	condition1 := []interface{}{"starts-with", "$key", dir}
-	condition2 := []interface{}{"content-length-range", 1, 10485760}
-	policy.Conditions = append(policy.Conditions, condition1)
-	policy.Conditions = append(policy.Conditions, condition2)
+	// Create post config json.
+	var cfg postConfig
+	cfg.Expiration = tokenExpire
+	condition1 := []any{"starts-with", "$key", dir}
+	condition2 := []any{"content-length-range", 1, 10485760}
+	cfg.Conditions = append(cfg.Conditions, condition1)
+	cfg.Conditions = append(cfg.Conditions, condition2)
 
-	//calucate signature
-	result, err := json.Marshal(policy)
+	// Calucate signature.
+	result, err := json.Marshal(cfg)
 	if err != nil {
 		return nil, err
 	}
 	debyte := base64.StdEncoding.EncodeToString(result)
-	h := hmac.New(func() hash.Hash { return sha1.New() }, []byte(o.accessKeySecret))
+	h := hmac.New(func() hash.Hash { return sha1.New() }, []byte(c.accessKeySecret))
 	io.WriteString(h, debyte)
 	signedStr := base64.StdEncoding.EncodeToString(h.Sum(nil))
 
-	var policyToken PolicyToken
-	policyToken.AccessKeyId = o.accessKeyID
-	policyToken.Host = o.host
+	var policyToken policyToken
+	policyToken.AccessKeyId = c.accessKeyID
+	policyToken.Host = c.host
 	policyToken.Expire = expireEnd
 	policyToken.Signature = signedStr
 	policyToken.Directory = dir

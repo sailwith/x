@@ -61,7 +61,7 @@ func (r *ReceiptPayload) check(bundleID string) error {
 	return nil
 }
 
-// get the most recent order
+// Get the most recent order.
 func (r *ReceiptPayload) RecentOrder(bundleID string) (*InApp, error) {
 	if err := r.check(bundleID); err != nil {
 		return nil, err

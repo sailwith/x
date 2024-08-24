@@ -16,10 +16,10 @@ type Config struct {
 	Skip    int
 	AppName string
 
-	// Log file config
+	// Log file config.
 	Path       string
 	MaxSize    int // megabytes
-	MaxAge     int //days
+	MaxAge     int // days
 	MaxBackups int
 	Compress   bool
 }
