@@ -40,6 +40,6 @@ func printSQL(db *gorm.DB) {
 	}
 	var u user
 	ctx := context.Background()
-	ctx = context.WithValue(ctx, logger.TraceIDKey{}, "123456")
+	ctx = logger.SetTraceID(ctx, "123456")
 	db.WithContext(ctx).Raw("select * from user where id = 1").Scan(&u)
 }

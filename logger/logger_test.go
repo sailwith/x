@@ -38,6 +38,6 @@ func TestLogWithTraceID(t *testing.T) {
 	assert.NoError(t, err)
 	defer os.RemoveAll(logDir)
 
-	ctx := context.WithValue(context.Background(), TraceIDKey{}, "123456789")
+	ctx := SetTraceID(context.Background(), "123456789")
 	logger.WithCtx(ctx).Info("message with trace id")
 }

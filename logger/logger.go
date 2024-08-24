@@ -10,7 +10,7 @@ import (
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
-type TraceIDKey struct{}
+type traceIDKey struct{}
 
 type Config struct {
 	Skip    int
@@ -61,7 +61,7 @@ func New(c Config) (*Logger, error) {
 }
 
 func (l *Logger) WithCtx(ctx context.Context) *Logger {
-	traceID := ctx.Value(TraceIDKey{})
+	traceID := ctx.Value(traceIDKey{})
 	return &Logger{
 		instance: l.instance.With("trace_id", traceID),
 	}
@@ -116,5 +116,5 @@ func (l *Logger) Panicf(template string, args ...any) {
 }
 
 func SetTraceID(ctx context.Context, traceID any) context.Context {
-	return context.WithValue(ctx, TraceIDKey{}, traceID)
+	return context.WithValue(ctx, traceIDKey{}, traceID)
 }

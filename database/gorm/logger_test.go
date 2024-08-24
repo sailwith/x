@@ -24,7 +24,7 @@ func TestLogPrint(t *testing.T) {
 	assert.NoError(t, err)
 
 	ctx := context.Background()
-	ctx = context.WithValue(ctx, logger.TraceIDKey{}, "123456")
+	ctx = logger.SetTraceID(ctx, "123456")
 	cl.Info(ctx, "test info log with number %v", 0)
 	cl.Warn(ctx, "test warn log with text %v", "hello")
 	cl.Error(ctx, "test error log with error %v", errors.New("test error"))
