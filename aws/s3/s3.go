@@ -7,7 +7,7 @@ import (
 	"log"
 	"time"
 
-	awscfg "github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 )
 
@@ -23,7 +23,7 @@ type Client struct {
 
 func New(c Config) *Client {
 	// Read the aws configuration file, the default path is ~/.aws.
-	cfg, err := awscfg.LoadDefaultConfig(context.Background())
+	cfg, err := config.LoadDefaultConfig(context.Background())
 	if err != nil {
 		log.Fatal(err)
 	}

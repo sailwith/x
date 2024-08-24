@@ -114,3 +114,7 @@ func (l *Logger) Panic(args ...any) {
 func (l *Logger) Panicf(template string, args ...any) {
 	l.instance.Panicf(template, args...)
 }
+
+func SetTraceID(ctx context.Context, traceID any) context.Context {
+	return context.WithValue(ctx, TraceIDKey{}, traceID)
+}

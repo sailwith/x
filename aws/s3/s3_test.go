@@ -12,8 +12,9 @@ func TestPresignPutObject(t *testing.T) {
 		Bucket: "bucket",
 	})
 	presign, err := client.PresignPutObject(context.Background(), "path/to/filename.txt")
-	assert.NoError(t, err)
-	t.Log(presign.URL)
+	if assert.NoError(t, err) {
+		t.Log(presign.URL)
+	}
 }
 
 func TestPutObject(t *testing.T) {
