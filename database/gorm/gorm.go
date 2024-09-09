@@ -18,6 +18,7 @@ func New(c Config) (*gorm.DB, error) {
 	}
 
 	return gorm.Open(mysql.Open(c.DSN), &gorm.Config{
-		Logger: l,
+		Logger:      l,
+		PrepareStmt: true,
 	})
 }
