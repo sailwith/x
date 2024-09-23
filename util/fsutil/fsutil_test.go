@@ -14,3 +14,11 @@ func TestCreateFile(t *testing.T) {
 	defer os.RemoveAll(path)
 	t.Log(f.Name())
 }
+
+func TestFindModuleRoot(t *testing.T) {
+	dir, err := os.Getwd()
+	assert.NoError(t, err)
+
+	roots := FindModuleRoot(dir)
+	assert.NotEmpty(t, roots)
+}
